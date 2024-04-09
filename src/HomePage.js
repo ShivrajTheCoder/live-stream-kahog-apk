@@ -3,7 +3,7 @@ import { Button, View, StyleSheet, Text, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ThemeContext from "./contexts/ThemeProvider";
-
+import Icons from "react-native-vector-icons/AntDesign"
 export default function HomePage(props) {
     const navigation = useNavigation();
     const { theme } = useContext(ThemeContext);
@@ -26,6 +26,7 @@ export default function HomePage(props) {
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: isDarkTheme ? '#333' : '#FFF' }]}>
             <Text style={[styles.userID, { color: isDarkTheme ? '#EEE' : '#2A2A2A' }]}>Your User ID: {userID}</Text>
+            <Icons name="arrowright" size={24} color={isDarkTheme ? '#EEE' : '#2A2A2A'}  />
             <Text style={[styles.liveID, styles.leftPadding, { color: isDarkTheme ? '#EEE' : '#2A2A2A' }]}>Live ID:</Text>
             <TextInput
                 placeholder="Enter the Live ID. e.g. 6666"
