@@ -1,14 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, View, StyleSheet, Text, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ThemeContext from "./contexts/ThemeProvider";
-import Icons from "react-native-vector-icons/AntDesign"
+
 export default function HomePage(props) {
     const navigation = useNavigation();
-    const { theme } = useContext(ThemeContext);
-    const isDarkTheme = theme === 'dark';
-
     const onJoinPress = (isHost) => {
         navigation.navigate(isHost ? 'HostPage' : 'AudiencePage', {
             userID: userID,
@@ -24,13 +20,12 @@ export default function HomePage(props) {
     }, [])
     const insets = useSafeAreaInsets();
     return (
-        <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: isDarkTheme ? '#333' : '#FFF' }]}>
-            <Text style={[styles.userID, { color: isDarkTheme ? '#EEE' : '#2A2A2A' }]}>Your User ID: {userID}</Text>
-            <Icons name="arrowright" size={24} color={isDarkTheme ? '#EEE' : '#2A2A2A'}  />
-            <Text style={[styles.liveID, styles.leftPadding, { color: isDarkTheme ? '#EEE' : '#2A2A2A' }]}>Live ID:</Text>
+        <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+            <Text style={styles.userID}>Your User ID: {userID}</Text>
+            <Text style={[styles.liveID, styles.leftPadding]}>Live ID:</Text>
             <TextInput
                 placeholder="Enter the Live ID. e.g. 6666"
-                style={[styles.input, { backgroundColor: isDarkTheme ? '#444' : '#FFF', color: isDarkTheme ? '#EEE' : '#2A2A2A', borderColor: isDarkTheme ? '#EEE' : '#333' }]}
+                style={[styles.input]}
                 onChangeText={text => setLiveID(text.replace(/[^0-9A-Za-z_]/g, ''))}
                 maxLength={4}
                 value={liveID}
@@ -39,8 +34,11 @@ export default function HomePage(props) {
             <View style={[styles.buttonLine, styles.leftPadding]}>
                 <Button disabled={liveID.length == 0} style={styles.button} title="Start a live" onPress={() => { onJoinPress(true) }} />
                 <View style={styles.buttonSpacing} />
-                <Button disabled={liveID.length == 0} style={styles.button} title="Watch a live" onPress={() => { onJoinPress(false) }} />
+                <Button  disabled={liveID.length == 0} style={styles.button} title="Watch a live" onPress={() => { onJoinPress(false) }} />
             </View>
+            {/* <View style={styles.buttonLine}>
+                <Button title="Disconnect SDK" onPress={() => { ZegoUIKit.disconnectSDK() }} />
+            </View> */}
         </View>)
 }
 
@@ -51,6 +49,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     buttonLine: {
+        // flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
         width: 305,
         borderWidth: 1,
         borderRadius: 9,
+        borderColor: '#333333',
         paddingLeft: 16,
         paddingRight: 16,
         paddingTop: 10,
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     },
     userID: {
         fontSize: 14,
+        color: '#2A2A2A',
         marginBottom: 27,
         paddingBottom: 12,
         paddingTop: 12,
@@ -80,7 +81,15 @@ const styles = StyleSheet.create({
     },
     liveID: {
         fontSize: 14,
+        color: '#2A2A2A',
         marginBottom: 5,
+    },
+    simpleCallTitle: {
+        color: '#2A2A2A',
+        fontSize: 21,
+        width: 330,
+        fontWeight: 'bold',
+        marginBottom: 27,
     },
     button: {
         height: 42,

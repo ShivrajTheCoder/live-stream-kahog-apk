@@ -25,7 +25,7 @@ export default function AudiencePage(props) {
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,
           onLeaveLiveStreaming: () => {
-            props.navigation.navigate('HomePage');
+            props.navigation.navigate('Home');
           },
           topMenuBarConfig: {
             buttons: [ZegoMenuBarButtonName.minimizingButton, ZegoMenuBarButtonName.leaveButton],
