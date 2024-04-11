@@ -8,7 +8,6 @@ export default function BottomNav({ state,  navigation }) {
         home: "Home",
         search: "Search",
         creator: "Creator",
-        calendar: "Calendar",
         about: "AboutUs",
       };
     const { theme } = useContext(ThemeContext);
@@ -17,7 +16,6 @@ export default function BottomNav({ state,  navigation }) {
         <Icon name="home" size={30}  />,
         <Icon name="magnifying-glass" size={30}  />,
         <Icon name="squared-plus" size={30}  />,
-        <Icon name="calendar" size={30}  />,
         <Icon2 name="kickstarter-k" size={30}  />,
         
     ];

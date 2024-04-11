@@ -4,10 +4,12 @@ import Sound from 'react-native-sound'; // Import Sound library for audio handli
 import BackButton from '../../components/BackButton';
 import Icons from "react-native-vector-icons/AntDesign";
 
-const backward = <Icons name="banckward" size={24} color="white" />;
-const forward = <Icons name="forward" size={24} color="white" />;
-const emptyLike = <Icons name="hearto" size={24} color="white" />;
-const liked = <Icons name="heart" size={24} color="red" />;
+const backward = <Icons name="banckward" size={30} color="white" />;
+const forward = <Icons name="forward" size={30} color="white" />;
+const emptyLike = <Icons name="hearto" size={30} color="white" />;
+const liked = <Icons name="heart" size={30} color="red" />;
+const play = <Icons name="play" size={30} color="white" />;
+const pause = <Icons name="pause" size={30} color="white" />;
 
 export default function AudioPlayingScreen() {
   const audioRef = useRef(null);
@@ -100,8 +102,8 @@ export default function AudioPlayingScreen() {
         <TouchableOpacity onPress={handleSeekBackward}>
           {backward}
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePlayPause}>
-          <Text style={styles.controlButton}>{isPlaying ? 'Pause' : 'Play'}</Text>
+        <TouchableOpacity onPress={handlePlayPause} style={{ marginHorizontal: 10 }} >
+          {isPlaying ? pause : play}
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSeekForward}>
           {forward}
@@ -116,6 +118,9 @@ export default function AudioPlayingScreen() {
         </TouchableOpacity>
       </View>
       <Text style={styles.durationText}>{formatTime(position)} / {formatTime(duration)}</Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.descriptionText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi modi, dignissimos perferendis pariatur distinctio dolor iure culpa voluptate quis labore adipisci quo dolorem maxime cupiditate rerum ratione iste exercitationem et!</Text>
+      </View>
     </View>
   );
 }
@@ -130,6 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    marginVertical: 20
   },
   progressContainer: {
     height: 5,
@@ -154,6 +160,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     textAlign: 'center'
+  },
+  descriptionContainer: {
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginHorizontal: 20,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: "white",
+    textAlign: 'center',
   },
   image: {
     height: 200,

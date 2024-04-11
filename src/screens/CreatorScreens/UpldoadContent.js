@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import BackButton from '../../components/BackButton';
 import ChannelContentCont from '../../components/CreatorComponents.js/ChannelContentCont';
 import ThemeContext from '../../contexts/ThemeProvider';
 
-export default function UpldoadContent({ channelId }) {
+export default function UploadContent({ channelId }) {
   const { theme } = useContext(ThemeContext);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleFilePick = async () => {
     try {
@@ -29,6 +31,21 @@ export default function UpldoadContent({ channelId }) {
     <View style={[styles.container, { backgroundColor: theme === 'dark' ? 'black' : 'white' }]}>
       <BackButton screen='Upload' to='Creator' />
       <Text style={[styles.title, { color: theme === 'dark' ? 'white' : 'black' }]}>Upload Content</Text>
+      <TextInput
+        style={[styles.input, { color: theme === 'dark' ? 'white' : 'black' }]}
+        value={title}
+        onChangeText={setTitle}
+        placeholder="Title"
+        placeholderTextColor={theme === 'dark' ? '#888' : '#999'}
+      />
+      <TextInput
+        style={[styles.input, { color: theme === 'dark' ? 'white' : 'black' }]}
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Description"
+        placeholderTextColor={theme === 'dark' ? '#888' : '#999'}
+        multiline={true}
+      />
       <TouchableOpacity style={[styles.uploadButton, { backgroundColor: theme === 'dark' ? 'white' : 'black' }]} onPress={handleFilePick}>
         <Text style={[styles.buttonText, { color: theme === 'dark' ? 'black' : 'white' }]}>Select File</Text>
       </TouchableOpacity>
@@ -50,6 +67,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 20,
     fontWeight: 'bold',
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
   uploadButton: {
     paddingVertical: 10,

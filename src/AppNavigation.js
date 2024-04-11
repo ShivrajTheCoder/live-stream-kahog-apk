@@ -29,6 +29,10 @@ import Events from "./screens/OriginalsScreen/Events";
 import Karyashala from "./screens/OriginalsScreen/Karyashala";
 import Pathshala from "./screens/OriginalsScreen/Pathshala";
 import UpldoadContent from "./screens/CreatorScreens/UpldoadContent";
+import StoreScreen from "./screens/EcommerceScreens/StoreScreen";
+import ProductDetails from "./screens/EcommerceScreens/ProductDetails";
+import Login from "./screens/AuthScreens/Login";
+import Signup from "./screens/AuthScreens/Signup";
 
 // const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -62,6 +66,10 @@ export default function AppNavigation(props) {
             {/* Static Screens */}
             <Tab.Screen options={{headerShown: false}} name="AboutUs" component={AboutUs} />
             <Tab.Screen options={{headerShown: false}} name="Upload" component={UpldoadContent} />
+            <Tab.Screen name="Store" component={StoreScreen} options={{headerShown: false}} />
+            <Tab.Screen name="ProductDetails" component={ProductDetails} options={{headerShown: false}} />
+            <Tab.Screen name="Login" component={Login} options={{headerShown: false}} />
+            <Tab.Screen name="Signup" component={Signup} options={{headerShown: false}} />
         </Tab.Navigator>
     );
 }
