@@ -14,14 +14,14 @@ export default function SearchOptions() {
           <Text style={styles.buttonText}>Following</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <TouchableOpacity onPress={() => navigation.navigate('Coaches')} style={styles.button}>
           <Text style={styles.buttonText}>Coaches</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('MyCourses')} style={styles.button}>
           <Text style={styles.buttonText}>Learning</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }

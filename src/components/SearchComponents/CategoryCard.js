@@ -11,7 +11,7 @@ export default function CategoryCard({ data }) {
     return (
         <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#1e1e1e' : 'white' }]}>
             <View style={styles.categoryHeader}>
-                <Text style={[styles.categoryHeaderText, { color: theme === 'dark' ? 'white' : 'black' }]}>{data.name}</Text>
+                <Text style={[styles.categoryHeaderText, { color: theme === 'dark' ? 'white' : 'black' }]}>{data.category_name}</Text>
                 <TouchableOpacity onPress={() => setShowSub(!showSub)}>
                     <AntDesign name={showSub ? "up" : "down"} size={24} color={iconColor} />
                 </TouchableOpacity>

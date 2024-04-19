@@ -37,9 +37,9 @@ export default function HomeNav({ toggleSidebar }) {
           {notification}
         </TouchableOpacity >
         <View style={styles.iconSpacer} />
-        <TouchableOpacity onPress={() => navigation.navigate('Inbox')} >
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Inbox')} >
           {message}
-        </TouchableOpacity >
+        </TouchableOpacity > */}
       </View>
     </View>
   );

@@ -1,130 +1,102 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, View, Image, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-
+import { ScrollView, View, Image, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import ThemeContext from '../../contexts/ThemeProvider';
 import KeyCenter from '../../KeyCenter';
 
 const { width } = Dimensions.get('window');
-const itemWidth = (width - 80) / 2; // Divide by 2 to fit 2 items per row with 10px margin on each side
-
-const data = [
-    {
-        id: 1,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Jute Basket",
-        price: 500 // Price in rupees
-    },
-    {
-        id: 2,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Men's Shirt",
-        price: 799 // Price in rupees
-    },
-    {
-        id: 3,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Pencil Set",
-        price: 150 // Price in rupees
-    },
-    {
-        id: 4,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Wall Clock",
-        price: 899 // Price in rupees
-    },
-    {
-        id: 5,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Basketball",
-        price: 299 // Price in rupees
-    },
-    {
-        id: 6,
-        image: "https://res.cloudinary.com/dushmacr8/image/upload/v1710399228/kj%20images/haat_images/juitebasket_sv88sa.webp",
-        name: "Bracelet",
-        price: 199 // Price in rupees
-    }
-];
+const itemWidth = (width - 80) / 2;
 
 export default function ProductsContainer({ home }) {
     const navigation = useNavigation();
-    const { theme } = useContext(ThemeContext); // Access theme from ThemeContext
+    const { theme } = useContext(ThemeContext);
     const apiUrl = KeyCenter.apiUrl;
     const iconColor = theme === 'dark' ? 'white' : 'black';
-    const imageBackground = theme === 'dark' ? 'black' : 'transparent'; // Adjust image background based on theme
-    const [loading,setLoading]=useState(true);
-    const [products,setProducts]=useState();
-    const [error,setError]=useState(null);
+    const imageBackground = theme === 'dark' ? 'black' : 'transparent';
+    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
 
-    const navigateDetails = () => {
-        navigation.navigate("ProductDetails");
-    }
+    const navigateDetails = (productId) => {
+        navigation.navigate("ProductDetails", { productId });
+    };
+    
 
-    const noProd = home ? 4 : data.length;
-    const renderedProducts = [];
-    for (let i = 0; i < noProd; i += 2) {
-        const firstProduct = data[i];
-        const secondProduct = data[i + 1];
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/shop/getshop`);
+                console.log(response.data.shops, "here is hte shop")
+                if (response.status === 200) {
+                    setProducts(response.data.shops.slice(0, 4));
+                } else {
+                    setError('Failed to fetch products');
+                }
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        renderedProducts.push(
-            <View key={firstProduct.id} style={styles.productContainer}>
-                <TouchableOpacity style={styles.product} onPress={navigateDetails}>
-                    <Image source={{ uri: firstProduct.image }} style={[styles.image, { backgroundColor: imageBackground }]} />
-                    <Text style={[styles.name, { color: iconColor }]}>{firstProduct.name}</Text>
-                    <Text style={[styles.price, { color: iconColor }]}>₹{firstProduct.price}</Text>
-                </TouchableOpacity>
-                {secondProduct && ( // Check if second product exists
-                    <TouchableOpacity style={styles.product} onPress={navigateDetails}>
-                        <Image source={{ uri: secondProduct.image }} style={[styles.image, { backgroundColor: imageBackground }]} />
-                        <Text style={[styles.name, { color: iconColor }]}>{secondProduct.name}</Text>
-                        <Text style={[styles.price, { color: iconColor }]}>₹{secondProduct.price}</Text>
-                    </TouchableOpacity>
-                )}
+        fetchProducts();
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#1e1e1e' : 'white' }]}>
+                <ActivityIndicator size="large" color={theme === 'dark' ? 'white' : 'black'} />
             </View>
         );
     }
 
-    // useEffect(() => {
-    //     const fetchProducts = async () => {
-    //       try {
-    //         const response = await axios.get(`${apiUrl}/shop/getshop`);
-    //         if (response.status === 200) {
-    //             // console.log(response.data.shops)
-    //         //   setBanner(image);
-    //         setProducts(response.data.shops)
-    //         } else {
-    //           console.error('Failed to fetch products:', response.statusText);
-    //           setError("Error while fetching")
-    //         }
-    //       } catch (error) {
-    //         console.error('Error fetching products:', error);
-    //         setError(error);
-    //       } finally {
-    //         setLoading(false);
-    //       }
-    //     };
-    
-    //     fetchProducts();
-    //   }, []);
+    if (error) {
+        return (
+            <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#1e1e1e' : 'white' }]}>
+                <Text style={{ color: theme === 'dark' ? 'white' : 'black' }}>Error: {error}</Text>
+            </View>
+        );
+    }
+
+    const renderedProducts = products.map(product => (
+        <TouchableOpacity
+            key={product.id}
+            style={styles.product}
+            onPress={() => navigateDetails(product.id)}
+        >
+
+            <Image source={{ uri: product.photo_path }} style={[styles.image, { backgroundColor: imageBackground }]} />
+            <Text style={[styles.name, { color: iconColor }]}>{product.item_name}</Text>
+            <Text style={[styles.price, { color: iconColor }]}>₹{product.item_price}</Text>
+        </TouchableOpacity>
+    ));
+
     return (
-        <ScrollView showsVerticalScrollIndicator={false} >
+        <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={[styles.title, { color: iconColor }]}>Category Name</Text>
-            {renderedProducts}
+            <View style={styles.productContainer}>
+                {renderedProducts}
+            </View>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     productContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        paddingHorizontal: 10,
     },
     product: {
         width: itemWidth,
         marginBottom: 20,
-        marginHorizontal:10,
     },
     image: {
         width: '100%',

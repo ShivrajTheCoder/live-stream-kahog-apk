@@ -10,7 +10,7 @@ export default function BhajanTile({ item }) {
   return (
     <View style={styles.container}>
       <View style={styles.liveInfo}>
-        <Image style={styles.image} source={{ uri: item.image }} />
+        <Image style={styles.image} source={{ uri: item.thumbnail }} />
         <View style={styles.details}>
           <Text style={[styles.name, styles.bold]}>Satish Thakral</Text>
           <Text style={styles.name}>Course Name</Text>

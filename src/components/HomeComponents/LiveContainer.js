@@ -36,23 +36,25 @@ export default function LiveContainer({ fooLive = true }) {
         <View style={[styles.container, { backgroundColor: theme === 'dark' ? 'black' : 'white' }]}>
             {fooLive && <Text style={[styles.text, { color: theme === 'dark' ? 'white' : 'black' }]}>Live Now</Text>}
             {!fooLive && <Text style={[styles.text, { color: theme === 'dark' ? 'white' : 'black' }]}>Mentor Courses</Text>}
-            <ScrollView horizontal={true} style={styles.tileScroll} showsHorizontalScrollIndicator={false}>
-                {loading ? (
-                    <Text>Loading...</Text>
-                ) : error ? (
-                    <Text>Error: {error}</Text>
-                ) : (
-                    lives.map((live, index) => (
+            {loading ? (
+                <Text style={[styles.text, { color: theme === 'dark' ? 'white' : 'black' }]}>Loading...</Text>
+            ) : error ? (
+                <Text style={[styles.text, { color: theme === 'dark' ? 'white' : 'black', height:100,  display:"flex" ,justifyContent:"center",alignItems:"center" }]}>No live events currently</Text>
+            ) : lives.length === 0 ? (
+                <Text style={[styles.text, { color: theme === 'dark' ? 'white' : 'black', height:100,  display:"flex" ,justifyContent:"center",alignItems:"center" }]}>No live events currently</Text>
+            ) : (
+                <ScrollView horizontal={true} style={styles.tileScroll} showsHorizontalScrollIndicator={false}>
+                    {lives.map((live, index) => (
                         <LiveCardBottomSheet
                             key={index}
                             name={live.topic} // You may need to adjust this depending on your API response structure
                             courseName={"ongoing"} // You may need to adjust this depending on your API response structure
-                            imageUrl={"https://res.cloudinary.com/dushmacr8/image/upload/v1707575264/kj%20images/audiocover3_oxgkjv.jpg"} // You may need to adjust this depending on your API response structure
+                            imageUrl={live.thumbnail} // You may need to adjust this depending on your API response structure
                             heading={live.description} // You may need to adjust this depending on your API response structure
                         />
-                    ))
-                )}
-            </ScrollView>
+                    ))}
+                </ScrollView>
+            )}
         </View>
     );
 }
