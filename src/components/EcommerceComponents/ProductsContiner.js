@@ -27,9 +27,9 @@ export default function ProductsContainer({ home }) {
         const fetchProducts = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/shop/getshop`);
-                console.log(response.data.shops, "here is hte shop")
+                // console.log(response.data.shops, "here is hte shop")
                 if (response.status === 200) {
-                    setProducts(response.data.shops.slice(0, 4));
+                    setProducts(response.data.shops);
                 } else {
                     setError('Failed to fetch products');
                 }

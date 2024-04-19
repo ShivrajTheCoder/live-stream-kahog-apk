@@ -17,6 +17,7 @@ export default function Circles() {
     const fetchCircles = async () => {
       try {
         const response = await axios.get(`${apiUrl}/circles/getallcircles`);
+        console.log(response.data.circles,"here are the circles");
         if (response.status === 200) {
           console.log(response.data.circles);
           setCircles(response.data.circles);

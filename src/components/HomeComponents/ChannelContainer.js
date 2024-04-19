@@ -4,8 +4,7 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import ThemeContext from '../../contexts/ThemeProvider';
 import KeyCenter from '../../KeyCenter';
 
-
-export default function ChannelContainer({ category }) {
+export default function ChannelContainer({ interest }) {
   const { theme } = useContext(ThemeContext);
   const apiUrl = KeyCenter.apiUrl;
   const [channels, setChannels] = useState([]);
@@ -16,8 +15,9 @@ export default function ChannelContainer({ category }) {
     const fetchChannels = async () => {
       try {
         const response = await axios.get(
-          `${apiUrl}/channels/getchannelsbycategory/${category.id}`
+          `${apiUrl}/channels/getchannelsbyinterest/${interest.id}`
         );
+        console.log(response.data,"here are the channels")
         if (response.status === 200) {
           console.log(response.data);
           setChannels(response.data.channels);
@@ -43,14 +43,14 @@ export default function ChannelContainer({ category }) {
   return (
     <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
       <Text style={[styles.categoryName, { color: theme === 'dark' ? '#fff' : '#000' }]}>
-        {category.category_name}
+        {interest.name}
       </Text>
       {loading ? (
         <Text>Loading...</Text>
       ) : error ? (
-        <Text>Error: {error}</Text>
+        <Text style={{ color: 'red' }} >No channels found</Text>
       ) : channels.length === 0 ? (
-        <Text>No channels found</Text>
+        <Text style={{ color: 'red' }}>No channels found</Text>
       ) : (
         <ScrollView
           horizontal
@@ -59,7 +59,7 @@ export default function ChannelContainer({ category }) {
         >
           {channels.map(channel => (
             <View key={channel.id} style={styles.channelCard}>
-              <Text style={[styles.channelName, { color: theme === 'dark' ? '#fff' : '#000' }]}>
+              <Text style={[styles.channelName, { color: theme === 'dark' ? '#000' : '#fff' }]}>
                 {channel.name}
               </Text>
               <Text style={styles.channelDescription}>{channel.description}</Text>
@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
   },
-  
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',

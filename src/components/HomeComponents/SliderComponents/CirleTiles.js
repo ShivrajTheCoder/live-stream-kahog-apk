@@ -9,10 +9,10 @@ export default function CircleTile({circle}) {
   return (
     <View style={styles.container}>
       <View style={styles.circleInfo}>
-        <Image style={styles.image} source={{ uri: 'https://via.placeholder.com/70' }} />
+        <Image style={styles.image} source={{ uri: circle.image_url }} />
         <View style={styles.details}>
           <Text style={[styles.name, styles.bold]}>{circle.circle_name}</Text>
-          <Text style={styles.name}>Circle Description</Text>
+          {/* <Text style={styles.name}>Circle Description</Text> */}
         </View>
         <TouchableOpacity style={styles.shareIcon}>
           {share}

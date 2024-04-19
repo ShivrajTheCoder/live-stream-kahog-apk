@@ -3,18 +3,18 @@ import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet } from 'reac
 import ThemeContext from '../../contexts/ThemeProvider';
 
 export default function Login() {
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { theme } = useContext(ThemeContext);
     const isDarkMode = theme === 'dark';
 
     const handleLogin = () => {
-        if (!phoneNumber || !password) {
-            Alert.alert('Error', 'Phone number and password are required');
+        if (!email || !password) {
+            Alert.alert('Error', 'Email and password are required');
             return;
         }
         // Implement your login logic here
-        Alert.alert('Login', `Logging in with phone number: ${phoneNumber}`);
+        Alert.alert('Login', `Logging in with email: ${email}`);
     };
 
     return (
@@ -22,11 +22,12 @@ export default function Login() {
             <Text style={[styles.heading, isDarkMode && styles.headingDark]}>Welcome to Kaho G</Text>
             <TextInput
                 style={[styles.input, isDarkMode && styles.inputDark]}
-                onChangeText={text => setPhoneNumber(text)}
-                value={phoneNumber}
-                placeholder="Phone Number"
+                onChangeText={text => setEmail(text)}
+                value={email}
+                placeholder="Email"
                 placeholderTextColor={isDarkMode ? 'white' : 'gray'}
-                keyboardType="phone-pad"
+                keyboardType="email-address"
+                autoCapitalize="none"
             />
             <TextInput
                 style={[styles.input, isDarkMode && styles.inputDark]}

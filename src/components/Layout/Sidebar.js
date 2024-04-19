@@ -30,7 +30,7 @@ export default function Sidebar({ open, onClose }) {
                 <View style={[styles.initialCont, { backgroundColor: profileButtonBackgroundColor }]}>
                     <Text style={{ color: textColor }}>M</Text>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{
                         backgroundColor: profileButtonBackgroundColor,
                         padding: 10,
@@ -41,7 +41,7 @@ export default function Sidebar({ open, onClose }) {
                     }}
                     onPress={handleContentPress}>
                     <Text style={{ color: textColor }}>View Profile</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {/* Sidebar Content */}
                 <TouchableOpacity
@@ -54,16 +54,16 @@ export default function Sidebar({ open, onClose }) {
                     onPress={() => navigation.navigate('Creator')}>
                     <Text style={[styles.link, { color: textColor }]}>Creator Studio</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.linkContainer2}
                     onPress={() => navigation.navigate('ForMe')}>
                     <Text style={[styles.link, { color: textColor }]}>My Account</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </TouchableOpacity> */}
+                {/* <TouchableOpacity
                     style={styles.linkContainer2}
                     onPress={handleContentPress}>
                     <Text style={[styles.link, { color: textColor }]}>Buy Subscription</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                     style={styles.linkContainer}
                     onPress={handleContentPress}>

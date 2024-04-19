@@ -1,30 +1,55 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import axios from 'axios';
 import ThemeContext from '../../contexts/ThemeProvider';
 import CommunityTile from '../../components/HomeComponents/SliderComponents/CommunityTile';
+import KeyCenter from '../../KeyCenter';
 
 export default function Community() {
     const { theme } = useContext(ThemeContext);
+    const apiUrl = KeyCenter.apiUrl;
+    const [communities, setCommunities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchCommunities = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/communities/getallcommunities`);
+                // console.log(response.data, "here are the communities");
+                if (response.status === 200) {
+                    setCommunities(response.data.communities);
+                } else {
+                    console.error('Failed to fetch communities:', response.statusText);
+                    setError('Failed to fetch communities');
+                }
+            } catch (error) {
+                console.error('Error fetching communities:', error);
+                setError('Error fetching communities');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCommunities();
+    }, []);
 
     return (
         <ScrollView contentContainerStyle={[styles.scrollView, { backgroundColor: theme === 'dark' ? 'black' : 'white' }]}>
             <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: theme === 'dark' ? 'white' : 'black' }]}>Your Communities</Text>
+                <Text style={[styles.sectionTitle, { color: theme === 'dark' ? 'white' : 'black' }]}>All Communities</Text>
                 <View style={styles.communityContainer}>
-                    {/* Your communities tiles go here */}
-                    <CommunityTile />
-                    <CommunityTile />
-                    {/* Add more CommunityTile components as needed */}
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: theme === 'dark' ? 'white' : 'black' }]}>Communities to Join</Text>
-                <View style={styles.communityContainer}>
-                    {/* Communities to join tiles go here */}
-                    <CommunityTile />
-                    <CommunityTile />
-                    {/* Add more CommunityTile components as needed */}
+                    {loading ? (
+                        <Text>Loading...</Text>
+                    ) : error ? (
+                        <Text>Error: {error}</Text>
+                    ) : communities.length === 0 ? (
+                        <Text>No communities found.</Text>
+                    ) : (
+                        communities.map(community => (
+                            <CommunityTile key={community.id} community={community} />
+                        ))
+                    )}
                 </View>
             </View>
         </ScrollView>

@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 import KeyCenter from '../../KeyCenter';
+import ThemeContext from '../../contexts/ThemeProvider';
 
 export default function Pathshala() {
   const [pathshalas, setPathshalas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { theme } = useContext(ThemeContext);
   const apiUrl = KeyCenter.apiUrl;
 
   useEffect(() => {
     const fetchPathshalas = async () => {
       try {
         const response = await axios.get(`${apiUrl}/pathshala/getallpathshala`);
-        // console.log(response.data.pathshalas);
         setPathshalas(response.data.pathshalas);
         setLoading(false);
       } catch (error) {
@@ -32,30 +33,30 @@ export default function Pathshala() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
+        <ActivityIndicator size="large" color={theme === 'dark' ? '#fff' : '#0000ff'} />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text>Error: {error}</Text>
+      <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
+        <Text style={[styles.errorText, { color: theme === 'dark' ? '#fff' : '#000' }]}>Error: {error}</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme === 'dark' ? '#333' : '#fff' }}>
       <View style={styles.container}>
-        <Text style={styles.heading}>Pathshalas</Text>
+        <Text style={[styles.heading, { color: theme === 'dark' ? '#fff' : '#000' }]}>Pathshalas</Text>
         {pathshalas.map(pathshala => (
-          <View key={pathshala.id} style={styles.pathshalaContainer}>
-            <Text style={styles.pathshalaName}>{pathshala.name}</Text>
-            <Text style={styles.pathshalaDetails}>Description: {pathshala.description}</Text>
+          <View key={pathshala.id} style={[styles.pathshalaContainer, { backgroundColor: theme === 'dark' ? '#444' : '#f0f0f0' }]}>
+            <Text style={[styles.pathshalaName, { color: theme === 'dark' ? '#fff' : '#000' }]}>{pathshala.name}</Text>
+            <Text style={[styles.pathshalaDetails, { color: theme === 'dark' ? '#ccc' : '#555' }]}>Description: {pathshala.description}</Text>
             <TouchableOpacity
-              style={styles.joinButton}
+              style={[styles.joinButton, { backgroundColor: theme === 'dark' ? 'blue' : '#007bff' }]}
               onPress={() => handleJoinPathshala(pathshala.id)}
             >
               <Text style={styles.joinButtonText}>Join</Text>
@@ -79,12 +80,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  errorText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   pathshalaContainer: {
+    width: 300, // Fixed width
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     padding: 10,
     marginBottom: 20,
+    alignItems: 'center',
   },
   pathshalaName: {
     fontSize: 18,
@@ -96,12 +103,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   joinButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#ade8f4',
     padding: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+    width: '100%', // Take up whole width
   },
   joinButtonText: {
     color: 'white',

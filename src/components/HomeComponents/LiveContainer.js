@@ -17,6 +17,7 @@ export default function LiveContainer({ fooLive = true }) {
         const fetchTopLives = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/lives/getTop5LiveEvents`);
+                console.log(response.data.top5LiveEvents);
                 if (response.status === 200) {
                     setLives(response.data.top5LiveEvents);
                 } else {

@@ -3,12 +3,13 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import ThemeContext from '../../../contexts/ThemeProvider';
 
 
-export default function CommunityTile() {
+export default function CommunityTile({community}) {
+    console.log(community, "community");
     const { theme } = useContext(ThemeContext);
 
     // Placeholder initial (use "A" for now)
-    const initial = "A";
-    const name = "Arts and Music";
+    const initial = community.community_name.slice(0,1);
+    const name = community.community_name;
     const members = "1000";
 
     return (
