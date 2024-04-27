@@ -6,14 +6,17 @@ import {
   ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { ThemeProvider } from './contexts/ThemeProvider';
+import { AuthProvider } from './contexts/AuthProvider';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <NavigationContainer >
-        <AppNavigation />
-        <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
-      </NavigationContainer>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <NavigationContainer >
+          <AppNavigation />
+          <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
+        </NavigationContainer>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

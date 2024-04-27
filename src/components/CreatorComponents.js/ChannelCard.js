@@ -6,7 +6,8 @@ import ThemeContext from '../../contexts/ThemeProvider';
 export default function ChannelCard({ channel }) {
     const { theme } = useContext(ThemeContext);
     const navigation = useNavigation(); // Hook for navigation
-
+    const isApproved=channel.isApproved ? true : false;
+    console.log(isApproved);
     const handleJoinChannel = (channelId) => {
         // Handle joining the channel here
     };
@@ -26,12 +27,24 @@ export default function ChannelCard({ channel }) {
             <Text style={[styles.channelDescription, { color: theme === 'dark' ? '#fff' : '#000' }]}>
                 Cinema
             </Text>
-            <TouchableOpacity
-                style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
-                onPress={() => handleUploadContent(channel.id)}
-            >
-                <Text style={styles.buttonText}>Upload Content</Text>
-            </TouchableOpacity>
+            <View>
+                {
+                    isApproved && <TouchableOpacity
+                    style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
+                    onPress={() => handleUploadContent(channel.id)}
+                >
+                    <Text style={styles.buttonText}>Upload Content</Text>
+                </TouchableOpacity>
+                }
+                 
+                 {
+                    !isApproved && <TouchableOpacity
+                    style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
+                >
+                    <Text style={styles.buttonText}>Approval Pending</Text>
+                </TouchableOpacity>
+                }
+            </View>
         </View>
     );
 }
@@ -42,6 +55,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderRadius: 8,
         minWidth: 150,
+        marginVertical: 10
     },
     channelName: {
         fontSize: 16,

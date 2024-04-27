@@ -1,58 +1,146 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import BackButton from '../../components/BackButton';
-import ChannelContentCont from '../../components/CreatorComponents.js/ChannelContentCont';
+import KeyCenter from '../../KeyCenter';
 import ThemeContext from '../../contexts/ThemeProvider';
+import AuthContext from '../../contexts/AuthProvider';
+import BackButton from '../../components/BackButton';
+import { useNavigation } from '@react-navigation/native';
 
-export default function UploadContent({ channelId }) {
-  const { theme } = useContext(ThemeContext);
-  const [selectedFile, setSelectedFile] = useState(null);
+export default function UploadContent() {
+  const [selectedThumbnail, setSelectedThumbnail] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-
-  const handleFilePick = async () => {
+  const { apiUrl } = KeyCenter;
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
+  const { id, token } = user;
+  const navigation = useNavigation();
+  const pickThumbnail = async () => {
     try {
       const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.audio, DocumentPicker.types.video],
+        type: [DocumentPicker.types.images],
       });
-
-      setSelectedFile(res);
+      setSelectedThumbnail(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker
+        console.log('User cancelled picking thumbnail');
       } else {
-        console.log('Error picking file:', err);
+        console.log('Error picking thumbnail:', err);
       }
     }
   };
 
+  const pickMedia = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.video, DocumentPicker.types.audio],
+      });
+      setSelectedMedia(res);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled picking media');
+      } else {
+        console.log('Error picking media:', err);
+      }
+    }
+  };
+
+  const uploadFiles = async () => {
+    if (!selectedThumbnail || !selectedMedia || !title || !description) {
+      Alert.alert('Fields Required', 'Please fill in all fields and select both thumbnail and media files to upload');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('thumbnail', {
+      uri: selectedThumbnail[0].uri,
+      name: 'thumbnail.jpg',
+      type: 'image/jpg',
+    });
+    formData.append('mediaFile', {
+      uri: selectedMedia[0].uri,
+      name: selectedMedia[0].name,
+      type: selectedMedia[0].type,
+    });
+    formData.append("authorId", id);
+    formData.append("name", title);
+    formData.append("description", description);
+    formData.append("isVideo", 1); // Assuming it's always a video
+    formData.append("categoryId", 1); // Assuming categoryId is always 1
+
+    try {
+      const response = await fetch(`${apiUrl}/podcasts/uploadpodcast`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response);
+      if (response.ok) {
+        Alert.alert('Upload Successful', 'Your content will be shown in the channel upon approval.', [
+          { text: 'OK', onPress: () => navigation.navigate('Creator') } // Navigate to "Creator" screen
+        ]);
+        console.log('Files uploaded successfully');
+      } else {
+        console.error('Error uploading files:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error uploading files:', error);
+    }
+  };
+
+  // Function to convert bytes to megabytes
+  const bytesToMB = (bytes) => {
+    return (bytes / (1024 * 1024)).toFixed(2);
+  };
+
   return (
-    <View style={[styles.container, { backgroundColor: theme === 'dark' ? 'black' : 'white' }]}>
-      <BackButton screen='Upload' to='Creator' />
-      <Text style={[styles.title, { color: theme === 'dark' ? 'white' : 'black' }]}>Upload Content</Text>
+    <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#000' : '#fff' }]}>
+      <BackButton screen='Channel Content' to='Creator' />
       <TextInput
-        style={[styles.input, { color: theme === 'dark' ? 'white' : 'black' }]}
+        style={[styles.input, styles.titleInput, { color: theme === 'dark' ? '#fff' : '#000' }]}
         value={title}
         onChangeText={setTitle}
         placeholder="Title"
         placeholderTextColor={theme === 'dark' ? '#888' : '#999'}
       />
       <TextInput
-        style={[styles.input, { color: theme === 'dark' ? 'white' : 'black' }]}
+        style={[styles.input, styles.descriptionInput, { color: theme === 'dark' ? '#fff' : '#000' }]}
         value={description}
         onChangeText={setDescription}
         placeholder="Description"
         placeholderTextColor={theme === 'dark' ? '#888' : '#999'}
         multiline={true}
       />
-      <TouchableOpacity style={[styles.uploadButton, { backgroundColor: theme === 'dark' ? 'white' : 'black' }]} onPress={handleFilePick}>
-        <Text style={[styles.buttonText, { color: theme === 'dark' ? 'black' : 'white' }]}>Select File</Text>
+      <TouchableOpacity onPress={pickThumbnail} style={[styles.button, { backgroundColor: theme === 'dark' ? '#fff' : '#000' }]}>
+        <Text style={[styles.buttonText, { color: theme === 'dark' ? '#000' : '#fff' }]}>Choose Thumbnail</Text>
       </TouchableOpacity>
-      {selectedFile && (
-        <Text style={[styles.selectedFile, { color: theme === 'dark' ? 'white' : 'black' }]}>Selected File: {selectedFile.name}</Text>
-      )}
-      <ChannelContentCont />
+      {selectedThumbnail && selectedThumbnail.length > 0 &&
+        (
+          <View>
+            <Text style={{ color: theme === 'dark' ? '#fff' : '#000' }}>Name: {selectedThumbnail[0].name}</Text>
+            <Text style={{ color: theme === 'dark' ? '#fff' : '#000' }}>Size: {bytesToMB(selectedThumbnail[0].size)} MB</Text>
+          </View>
+        )
+      }
+
+      <TouchableOpacity onPress={pickMedia} style={[styles.button, { backgroundColor: theme === 'dark' ? '#fff' : '#000' }]}>
+        <Text style={[styles.buttonText, { color: theme === 'dark' ? '#000' : '#fff' }]}>Choose media</Text>
+      </TouchableOpacity>
+      {selectedMedia && selectedMedia.length > 0 &&
+        (
+          <View>
+            <Text style={{ color: theme === 'dark' ? '#fff' : '#000' }}>Name: {selectedMedia[0].name}</Text>
+            <Text style={{ color: theme === 'dark' ? '#fff' : '#000' }}>Size: {bytesToMB(selectedMedia[0].size)} MB</Text>
+          </View>
+        )
+      }
+      <TouchableOpacity onPress={uploadFiles} style={[styles.button, { backgroundColor: theme === 'dark' ? 'red' : '#000' }]}>
+        <Text style={[styles.buttonText, { color: theme === 'dark' ? '#fff' : '#000' }, { fontSize: 15, fontWeight: "bold", marginVertical: 5 }]}>Apply For Approval</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -63,11 +151,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
-  title: {
-    fontSize: 15,
-    marginBottom: 20,
-    fontWeight: 'bold',
-  },
   input: {
     height: 40,
     borderWidth: 1,
@@ -76,21 +159,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
-  uploadButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
+  titleInput: {
     marginBottom: 20,
   },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
+  descriptionInput: {
+    height: 100, // Height of the textarea
+    textAlignVertical: 'top', // Align text at the top
   },
-  selectedFile: {
-    fontSize: 16,
-    color: 'black',
-  },
+  button: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5
+  }
 });

@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, Alert } from 'react-native';
 import axios from 'axios'; // Import axios for making HTTP requests
 import KeyCenter from '../../KeyCenter';
 import ThemeContext from '../../contexts/ThemeProvider';
-export default function CreateChannelForm() {
+import AuthContext from '../../contexts/AuthProvider';
+import { useNavigation } from '@react-navigation/native';
+export default function CreateChannelForm({setFlag}) {
+    const navigation=useNavigation();
     const { theme } = useContext(ThemeContext);
     const [channelName, setChannelName] = useState('');
     const [description, setDescription] = useState('');
@@ -12,7 +15,8 @@ export default function CreateChannelForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const apiUrl = KeyCenter.apiUrl;
-
+    const {user}=useContext(AuthContext);
+    const {id,token}=user;
     // Function to fetch interests from API
     useEffect(() => {
         const fetchInterests = async () => {
@@ -42,11 +46,40 @@ export default function CreateChannelForm() {
 
     // Function to handle form submission
     const handleSubmit = async () => {
-        // Submit logic here
+        try {
+            // Check if channel name, description, and selected interest are provided
+            if (!channelName || !description || !selectedInterest) {
+                setError('All fields are required');
+                return;
+            }
+    
+            // Make a POST request to create the channel
+            const response = await axios.post(`${apiUrl}/channels/createchannel`, {
+                name: channelName,
+                description,
+                creatorid: id, // Assuming you have the creator ID stored somewhere
+                interest_id: selectedInterest,
+            });
+            console.log(response.data);
+            // Check if the channel was created successfully
+            if (response.status === 201) {
+                // Show alert indicating channel submitted for approval
+                Alert.alert('Success', 'Channel submitted for approval');
+                // Navigate to the Creator screen
+                // navigation.navigate('Creator');
+                setFlag(prev=>!prev);
+            } else {
+                setError('Error creating channel');
+            }
+        } catch (error) {
+            setError('Error creating channel');
+            console.error('Error creating channel:', error);
+        }
     };
 
+
     return (
-        <ScrollView style={[styles.container, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
+        <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
             <TextInput
                 style={[styles.input, { borderColor: theme === 'dark' ? '#fff' : 'gray', color: theme === 'dark' ? '#fff' : 'black' }]}
                 placeholder="Channel Name"
@@ -87,7 +120,7 @@ export default function CreateChannelForm() {
             <TouchableOpacity style={styles.createButton} onPress={handleSubmit}>
                 <Text style={styles.createButtonText}>Create Channel</Text>
             </TouchableOpacity>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -95,6 +128,7 @@ export default function CreateChannelForm() {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
+        marginVertical:20
     },
     input: {
         height: 40,

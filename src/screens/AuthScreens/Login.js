@@ -1,20 +1,43 @@
 import React, { useContext, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
 import ThemeContext from '../../contexts/ThemeProvider';
+import AuthContext from '../../contexts/AuthProvider'; // Import AuthContext
+import axios from 'axios';
+import KeyCenter from '../../KeyCenter';
 
-export default function Login() {
+export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { theme } = useContext(ThemeContext);
+    const { login } = useContext(AuthContext); // Get login function from AuthContext
     const isDarkMode = theme === 'dark';
-
-    const handleLogin = () => {
+    const { apiUrl } = KeyCenter;
+    const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('Error', 'Email and password are required');
             return;
         }
-        // Implement your login logic here
-        Alert.alert('Login', `Logging in with email: ${email}`);
+        try {
+            const resp = await axios.post(`${apiUrl}/auth/cretorlogin`, {
+                email, password
+            })
+            if (resp.status === 200) {
+                const token = resp.data.token;
+                const { id } = resp.data.creator;
+                console.log(token, id);
+                login(id, token); // Dispatch update to AuthContext
+                // Alert.alert('Login', `Logging in with email: ${email}`);
+                navigation.navigate("Creator");
+            }
+        } catch (error) {
+            Alert.alert('Login', `Login failed`+error);
+        }
+
+
+    };
+
+    const handleSignup = () => {
+        navigation.navigate('Signup'); // Navigate to Signup screen
     };
 
     return (
@@ -40,7 +63,9 @@ export default function Login() {
             <TouchableOpacity style={[styles.button, isDarkMode && styles.buttonDark]} onPress={handleLogin}>
                 <Text style={[styles.buttonText, isDarkMode && styles.buttonTextDark]}>Login</Text>
             </TouchableOpacity>
-            <Text style={[styles.signupText, isDarkMode && styles.signupTextDark]}>Don't have an account? Try signing up</Text>
+            <TouchableOpacity onPress={handleSignup}>
+                <Text style={[styles.signupText, isDarkMode && styles.signupTextDark]}>Don't have an account? Try signing up</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -91,7 +116,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 18,
-        fontWeight:"bold"
+        fontWeight: "bold"
     },
     buttonTextDark: {
         color: 'white',

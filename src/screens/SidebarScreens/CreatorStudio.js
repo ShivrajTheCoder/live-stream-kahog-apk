@@ -4,6 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ThemeContext from '../../contexts/ThemeProvider';
 import CreatorChannelContainer from '../../components/CreatorComponents.js/CreatorChannelComponents';
 import CreateChannelForm from '../../components/CreatorComponents.js/CreateChannelForm';
+import AuthContext from '../../contexts/AuthProvider';
+import BackButton from '../../components/BackButton';
 
 
 const backIcon = <Ionicons name="arrow-back" size={24} />;
@@ -12,7 +14,17 @@ export default function CreatorStudio({ navigation }) {
     const [channelName, setChannelName] = useState('');
     const [showContentForm, setShowContentForm] = useState(false);
     const { theme } = useContext(ThemeContext);
+    const { user } = useContext(AuthContext);
+    const { id, token } = user;
+    console.log(user, "here is the user")
+    const [flag,setFlag]=useState(false);
     useEffect(() => {
+        console.log(id,"here ist hte id")
+        if (!id) {
+            // Navigate to the login screen or replace it with your login component
+            navigation.navigate('Login');
+            // return null;
+        }
         return () => {
             setShowContentForm(false);
         };
@@ -37,8 +49,9 @@ export default function CreatorStudio({ navigation }) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: theme === 'dark' ? '#1e1e1e' : 'white',
+            backgroundColor: theme === 'dark' ? 'black' : 'white',
             padding: 20,
+            paddingBottom:20
         },
         headingContainer: {
             flexDirection: 'row',
@@ -116,23 +129,18 @@ export default function CreatorStudio({ navigation }) {
     });
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             {/* Back Button */}
-            <View style={styles.headingContainer}>
-                <TouchableOpacity onPress={handleBack}>
-                    {React.cloneElement(backIcon, { color: theme === 'dark' ? 'white' : 'black' })}
-                </TouchableOpacity>
-                <Text style={styles.headingText}>Creator Studio</Text>
-            </View>
-            <CreatorChannelContainer />
+            <BackButton screen='Creator Studio' to='Home' />
+            <CreatorChannelContainer flag={flag}/>
             {/* Create Channel Form */}
-            {showContentForm && <CreateChannelForm />}
+            {showContentForm && <CreateChannelForm setFlag={setFlag} />}
             {
                 !showContentForm && <TouchableOpacity style={styles.addChannelButton} onPress={handleCreateChannel} >
-                {/* !showContentForm && <TouchableOpacity style={styles.addChannelButton} onPress={()=>{navigation.navigate("Upload")}} > */}
+                    {/* !showContentForm && <TouchableOpacity style={styles.addChannelButton} onPress={()=>{navigation.navigate("Upload")}} > */}
                     <Text style={styles.addChannelButtonText}>Add Channel</Text>
                 </TouchableOpacity>
             }
-        </View>
+        </ScrollView>
     );
 }

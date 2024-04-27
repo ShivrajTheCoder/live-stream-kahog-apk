@@ -1,40 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import KeyCenter from '../../KeyCenter';
 import ThemeContext from '../../contexts/ThemeProvider';
-
-const data = [
-  {
-    image: "https://res.cloudinary.com/dushmacr8/image/upload/v1707575265/kj%20images/cover_2_bgvidc.jpg",
-    id: 1,
-    size: 93,
-    episodes: 1,
-    name: "Kavita Ek Vishwaas"
-  },
-  {
-    image: "https://res.cloudinary.com/dushmacr8/image/upload/v1707575265/kj%20images/cover_2_bgvidc.jpg",
-    id: 2,
-    size: 30,
-    episodes: 3,
-    name: "Kavita Ek Vishwaas"
-  },
-  {
-    image: "https://res.cloudinary.com/dushmacr8/image/upload/v1707575265/kj%20images/cover_2_bgvidc.jpg",
-    id: 3,
-    size: 25,
-    episodes: 5,
-    name: "Kavita Ek Vishwaas"
-  },
-  {
-    image: "https://res.cloudinary.com/dushmacr8/image/upload/v1707575265/kj%20images/cover_2_bgvidc.jpg",
-    id: 4,
-    size: 100,
-    episodes: 2,
-    name: "Kavita Ek Vishwaas"
-  },
-];
+import { useNavigation } from '@react-navigation/native';
 
 export default function QuickPlayContainer({ selCat }) {
   const apiUrl = KeyCenter.apiUrl;
@@ -43,6 +12,7 @@ export default function QuickPlayContainer({ selCat }) {
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -55,7 +25,6 @@ export default function QuickPlayContainer({ selCat }) {
         const response = await axios.get(apiUrlToUse);
 
         if (response.status === 200) {
-          // console.log(response.data.podcasts);
           setPodcasts(response.data.podcasts);
           console.log(response.data.podcasts);
         } else {
@@ -73,6 +42,16 @@ export default function QuickPlayContainer({ selCat }) {
     fetchPodcasts();
   }, [selCat, selId]);
 
+  const handleItemClick = (item) => {
+    // console.log(item,"here is the item");
+    if (item.isVideo === 1) {
+      navigation.navigate('VideoPlay');
+    } else {
+      navigation.navigate('AudioPlay');
+    }
+  };
+
+
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -83,19 +62,29 @@ export default function QuickPlayContainer({ selCat }) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme === 'dark' ? 'black' : 'white' }]}>
-      <Text style={[styles.heading, { color: theme === 'dark' ? 'white' : 'black' }]}>Continue Playing for {name}</Text>
+      <Text style={[styles.heading, { color: theme === 'dark' ? 'white' : 'black' }]}>
+        Continue Playing for {name}
+      </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View>
           {podcasts.map(item => (
-            <View key={item.id} style={styles.card}>
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              onPress={() => handleItemClick(item)}
+            >
               <Image style={styles.cover} source={{ uri: item.thumbnail }} />
               <View style={styles.details}>
-                <Text style={[styles.name, { color: theme === 'dark' ? 'white' : 'black' }]}>{item.name}</Text>
+                <Text style={[styles.name, { color: theme === 'dark' ? 'white' : 'black' }]}>
+                  {item.name}
+                </Text>
                 <View style={styles.character}>
-                  <Text style={[styles.episodes, { color: theme === 'dark' ? 'white' : 'black' }]}>{item.description}</Text>
+                  <Text style={[styles.episodes, { color: theme === 'dark' ? 'white' : 'black' }]}>
+                    {item.description}
+                  </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
