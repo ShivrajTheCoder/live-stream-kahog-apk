@@ -3,8 +3,8 @@ import React, { createContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // const [user, setUser] = useState({ id: 1, token: "slfdsdsfjld" });
-  const [user, setUser] = useState({ id: null, token: null });
+  const [user, setUser] = useState({ id: 1, token: "slfdsdsfjld" });
+  // const [user, setUser] = useState({ id: null, token: null });
 
   const login = (id, token) => {
     setUser({ id, token });

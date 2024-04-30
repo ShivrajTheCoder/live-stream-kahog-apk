@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
 import ThemeContext from '../../contexts/ThemeProvider';
 import AuthContext from '../../contexts/AuthProvider'; // Import AuthContext
@@ -9,9 +9,16 @@ export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { theme } = useContext(ThemeContext);
-    const { login } = useContext(AuthContext); // Get login function from AuthContext
+    const { login,user } = useContext(AuthContext); // Get login function from AuthContext
+    const {id,token}=user;
     const isDarkMode = theme === 'dark';
     const { apiUrl } = KeyCenter;
+    useEffect(()=>{
+        console.log(id,token);
+        if(id && token){
+            navigation.navigate("Creator");
+        }
+    },[])
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('Error', 'Email and password are required');

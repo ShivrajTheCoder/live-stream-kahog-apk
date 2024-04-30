@@ -47,6 +47,8 @@ export default function LiveContainer({ fooLive = true }) {
                 <ScrollView horizontal={true} style={styles.tileScroll} showsHorizontalScrollIndicator={false}>
                     {lives.map((live, index) => (
                         <LiveCardBottomSheet
+                            live={live}
+                            liveID={live.id}
                             key={index}
                             name={live.topic} // You may need to adjust this depending on your API response structure
                             courseName={"ongoing"} // You may need to adjust this depending on your API response structure

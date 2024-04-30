@@ -1,31 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Button } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import RBSheet from "@nonam4/react-native-bottom-sheet";
-import Icons from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 
-const LiveCardBottomSheet = ({ name, imageUrl, heading }) => {
+const LiveCardBottomSheet = ({ name, imageUrl, heading, live }) => {
     const refRBSheet = useRef(null);
     const navigation = useNavigation();
-    const onJoinPress = (isHost) => {
-        navigation.navigate(isHost ? 'Home' : 'AudiencePage', {
-            userID: userID,
-            userName: userID,
-            liveID: liveID,
-        })
-    }
-    const [userID, setUserID] = useState('');
+    const [userID, setUserID] = useState("1");
     const [liveID, setLiveID] = useState('');
+
     useEffect(() => {
-        setUserID(String(Math.floor(Math.random() * 100000)));
-        setLiveID(String(Math.floor(Math.random() * 10000)));
-    }, [])
+        setLiveID(String(live?.id) || ''); // Update liveID whenever live prop changes
+    }, [live])
+
     const openBottomSheet = () => {
         if (refRBSheet.current) {
             refRBSheet.current.open();
         }
     };
+
+    const onJoinPress = (isHost) => {
+        navigation.navigate(isHost ? 'HostPage' : 'AudiencePage', {
+            userID: userID,
+            userName: userID,
+            liveID: liveID,
+        })
+    }
+
     const truncatedHeading = heading.length > 40 ? `${heading.substring(0, 40)}...` : heading;
+
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={openBottomSheet}>
@@ -34,11 +37,7 @@ const LiveCardBottomSheet = ({ name, imageUrl, heading }) => {
                         <Image style={styles.image} source={{ uri: imageUrl }} />
                         <View style={styles.details}>
                             <Text style={[styles.name, styles.bold]}>{name}</Text>
-                            {/* <Text style={styles.name}>{courseName}</Text> */}
                         </View>
-                        {/* <TouchableOpacity style={styles.shareIcon}>
-                            <Icons name="sharealt" size={24} color="white" />
-                        </TouchableOpacity> */}
                     </View>
                     <Text style={styles.heading}>{truncatedHeading}</Text>
                     <View style={styles.button}>
@@ -64,7 +63,7 @@ const LiveCardBottomSheet = ({ name, imageUrl, heading }) => {
                     body: {
                         borderTopLeftRadius: 20,
                         borderTopRightRadius: 20,
-                        padding: 20, // Add padding for content spacing
+                        padding: 20,
                     }
                 }}
             >
@@ -75,18 +74,18 @@ const LiveCardBottomSheet = ({ name, imageUrl, heading }) => {
                     <View style={styles.infoContainer}>
                         <Text style={styles.value}>{heading}</Text>
                     </View>
-                    {
-                        liveID?.length !== 0 &&
-                        <TouchableOpacity style={styles.joinBtn} onPress={() => { onJoinPress(false) }}>
-                            <Text style={styles.joinText}>
-                                JOIN NOW
-                            </Text>
-                        </TouchableOpacity>
-                    }
+                    {liveID?.length !== 0 && (
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.joinBtn} onPress={() => { onJoinPress(false) }}>
+                                <Text style={styles.joinText}>Join as Audience</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.joinBtn} onPress={() => { onJoinPress(true) }}>
+                                <Text style={styles.joinText}>Join as Host</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
             </RBSheet>
-
-
         </View>
     );
 };
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        // backgroundColor: "#000"
     },
     tileCont: {
         display: 'flex',
@@ -104,7 +102,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         backgroundColor: '#0077b6',
         borderRadius: 10,
-        width: 250, // Adjust the width as needed
+        width: 250,
     },
     image: {
         height: 70,
@@ -152,11 +150,6 @@ const styles = StyleSheet.create({
         marginVertical: 2,
         marginHorizontal: 4,
     },
-    shareIcon: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-    },
     cont: {
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -171,15 +164,16 @@ const styles = StyleSheet.create({
     },
     joinBtn: {
         backgroundColor: "red",
-        justifyContent:"center",
-        alignItems:"center",
-        paddingVertical:10,
-        borderRadius:5
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 10,
+        borderRadius: 5,
+        marginVertical: 5
     },
-    joinText:{
+    joinText: {
         color: "white",
-        fontSize:15,
-        fontWeight:"bold"
+        fontSize: 15,
+        fontWeight: "bold"
     }
 });
 

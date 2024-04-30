@@ -31,7 +31,7 @@ export default function HostPage(props) {
                     },
                     onLeaveLiveStreaming: () => {
                         console.log('########HostPage onLeaveLiveStreaming');
-                        props.navigation.navigate('HomePage');
+                        props.navigation.navigate('Home');
                     },
                     durationConfig: {
                         isVisible: true,
