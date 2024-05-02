@@ -1,8 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import Sound from 'react-native-sound'; // Import Sound library for audio handling
 import BackButton from '../../components/BackButton';
 import Icons from "react-native-vector-icons/AntDesign";
+import AudioContext from '../../contexts/AudioProvider';
 
 const backward = <Icons name="banckward" size={30} color="white" />;
 const forward = <Icons name="forward" size={30} color="white" />;
@@ -13,6 +14,7 @@ const pause = <Icons name="pause" size={30} color="white" />;
 
 export default function AudioPlayingScreen() {
   const audioRef = useRef(null);
+  const { startPlay, stopPlay } = useContext(AudioContext);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [position, setPosition] = useState(0);
@@ -23,6 +25,7 @@ export default function AudioPlayingScreen() {
     return () => {
       if (audioRef.current !== null) {
         audioRef.current.release(); // Release the audio resource
+        stopPlay(); // Call stopPlay when the audio is released
       }
     };
   }, []);
@@ -58,9 +61,11 @@ export default function AudioPlayingScreen() {
       if (!isPlaying) {
         audioRef.current.play();
         setIsPlaying(true);
+        startPlay(id=1, title="Audio Title"); // Call startPlay when audio starts playing
       } else {
         audioRef.current.pause();
         setIsPlaying(false);
+        stopPlay(); // Call stopPlay when audio playback is paused
       }
     }
   };

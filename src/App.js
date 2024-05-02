@@ -7,15 +7,18 @@ import {
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { ThemeProvider } from './contexts/ThemeProvider';
 import { AuthProvider } from './contexts/AuthProvider';
+import { AudioProvider } from './contexts/AudioProvider';
 
 export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <NavigationContainer >
-          <AppNavigation />
-          <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
-        </NavigationContainer>
+        <AudioProvider>
+          <NavigationContainer >
+            <AppNavigation />
+            <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
+          </NavigationContainer>
+        </AudioProvider>
       </ThemeProvider>
     </AuthProvider>
   );
