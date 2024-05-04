@@ -6,7 +6,7 @@ import ThemeContext from '../../contexts/ThemeProvider';
 export default function ChannelCard({ channel }) {
     const { theme } = useContext(ThemeContext);
     const navigation = useNavigation(); // Hook for navigation
-    const isApproved=channel.isApproved ? true : false;
+    const isApproved = channel.isApproved ? true : false;
     console.log(isApproved);
     const handleJoinChannel = (channelId) => {
         // Handle joining the channel here
@@ -30,20 +30,17 @@ export default function ChannelCard({ channel }) {
             <View>
                 {
                     isApproved && <TouchableOpacity
-                    style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
-                    onPress={() => handleUploadContent(channel.id)}
-                >
-                    <Text style={styles.buttonText}>Upload Content</Text>
-                </TouchableOpacity>
+                        style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
+                        onPress={() => handleUploadContent(channel.id)}
+                    >
+                        <Text style={styles.buttonText}>Upload Content</Text>
+                    </TouchableOpacity>
                 }
-                 
-                 {
-                    !isApproved && <TouchableOpacity
-                    style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]}
-                >
-                    <Text style={styles.buttonText}>Approval Pending</Text>
+                <TouchableOpacity
+                    style={[styles.joinButton, { backgroundColor: theme === 'dark' ? '#555' : '#007bff' }]} onPress={()=>navigation.navigate("Audio Stream")}>
+                    <Text style={styles.buttonText}>Stream Audio</Text>
                 </TouchableOpacity>
-                }
+
             </View>
         </View>
     );

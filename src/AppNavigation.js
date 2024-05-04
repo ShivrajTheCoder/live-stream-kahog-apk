@@ -33,6 +33,7 @@ import StoreScreen from "./screens/EcommerceScreens/StoreScreen";
 import ProductDetails from "./screens/EcommerceScreens/ProductDetails";
 import Login from "./screens/AuthScreens/Login";
 import Signup from "./screens/AuthScreens/Signup";
+import AudioStream from "./screens/CreatorScreens/AudioStream";
 
 // const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +47,7 @@ export default function AppNavigation(props) {
             <Tab.Screen options={{headerShown: false}} name="Search" component={Search} />
             <Tab.Screen options={{headerShown: false}} name="Calendar" component={Calendar} />
             <Tab.Screen options={{headerShown: false}} name="Creator" component={CreatorStudio} />
+            <Tab.Screen options={{headerShown: false}} name="Audio Stream" component={AudioStream} />
             <Tab.Screen options={{headerShown: false}} name="Refer" component={Referandwin} />
             <Tab.Screen options={{headerShown: false}} name="Setting" component={Setting} />
             <Tab.Screen options={{headerShown: false}} name="T&C" component={TandC} />

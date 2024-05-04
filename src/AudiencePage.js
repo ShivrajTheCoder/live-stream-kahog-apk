@@ -2,48 +2,46 @@ import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 
 import { StyleSheet, View, Text, Button } from 'react-native';
-import ZegoUIKitPrebuiltLiveStreaming, {
+import ZegoUIKitPrebuiltLiveAudioRoom, {
   AUDIENCE_DEFAULT_CONFIG,
-  ZegoMenuBarButtonName,
-} from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
+  ZegoMediaType,
+} from '@zegocloud/zego-uikit-prebuilt-live-audio-room-rn';
 import * as ZIM from 'zego-zim-react-native';
 import KeyCenter from "./KeyCenter";
 
 export default function AudiencePage(props) {
   const { route } = props;
   const { params } = route;
-  const { userID, userName, liveID } = params;
+  const { liveID } = params;
+
+  // Function to generate a random userID and userName except 1
+  const generateRandomUserInfo = () => {
+    let randomUserID = Math.floor(Math.random() * 100) + 2; // Generate random userID between 2 and 101
+    let randomUserName = `User${randomUserID}`; // Generate random userName based on userID
+
+    return {
+      userID: randomUserID.toString(),
+      userName: randomUserName
+    };
+  };
+
+  const { userID, userName } = generateRandomUserInfo();
 
   return (
     <View style={styles.container}>
-      <ZegoUIKitPrebuiltLiveStreaming
+      <ZegoUIKitPrebuiltLiveAudioRoom
         appID={KeyCenter.appID}
         appSign={KeyCenter.appSign}
         userID={userID}
         userName={userName}
-        liveID={liveID}
+        roomID={liveID}
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,
-          onLeaveLiveStreaming: () => {
+          onLeave: () => {
             props.navigation.navigate('Home');
           },
-          topMenuBarConfig: {
-            buttons: [ZegoMenuBarButtonName.minimizingButton, ZegoMenuBarButtonName.leaveButton],
-          },
-          onWindowMinimized: () => {
-            console.log('[Demo]AudiencePage onWindowMinimized');
-            props.navigation.navigate('HomePage');
-          },
-          onWindowMaximized: () => {
-              console.log('[Demo]AudiencePage onWindowMaximized');
-              props.navigation.navigate('AudiencePage', {
-                userID: userID,
-                userName: userName,
-                liveID: liveID,
-              });
-          }
+          onTurnOnYourMicrophoneRequest: (fromUser) => {},
         }}
-        plugins={[ZIM]}
       />
     </View>
   );
